@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Examples &mdash; icy 0.0.16 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.16',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+
+    <link rel="top" title="icy 0.0.16 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to icy’s Documentation" href="index.html" />
+<link rel="canonical" href="https://www.rcs-analytics.com/icy/index.html">
+
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-57QCXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-57QCXX');</script>
+<!-- End Google Tag Manager -->
+
+
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="parsing-many-html-files">
+<h2>Parsing many HTML-Files<a class="headerlink" href="#parsing-many-html-files" title="Permalink to this headline">¶</a></h2>
+<p>Download and unzip the <a class="reference external" href="https://developers.google.com/edu/python/google-python-exercises.zip">Baby Names dataset</a> (part of the great
+<a class="reference external" href="https://developers.google.com/edu/python/exercises/baby-names">Google Python Course</a>). From the archive we&#8217;ll just use the <cite>/babynames</cite>-folder (you can leave the .py-files and the subfolder in place).</p>
+<p>The dataset consists of 10 regular html-files taken from <a class="reference external" href="http://www.ssa.gov/">http://www.ssa.gov/</a>. If you preview the files, you&#8217;ll find tables embedded in the html with three columns <cite>Rank</cite>, <cite>Male name</cite>, <cite>Female name</cite> and 1000 rows per year.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">icy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icy</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="s">&#39;~/Downloads/google-python-exercises/babynames/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This results in a flood of data on your screen. Obviously the parser detects more tables than just the names. If you scroll through the preview result you&#8217;ll find results like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>File: baby2008.html_baby2008.html_2
+
+&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+Int64Index: 1002 entries, 0 to 1001
+Data columns (total 3 columns):
+0    1002 non-null object
+1    1001 non-null object
+2    1001 non-null object
+dtypes: object(3)
+memory usage: 31.3+ KB
+
+COLUMN               | first 5 VALUES
+----------------------------------------
+0                    | [&#39;Rank&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;]
+1                    | [&#39;Male name&#39;, &#39;Jacob&#39;, &#39;Michael&#39;, &#39;Ethan&#39;, &#39;Joshua&#39;]
+2                    | [&#39;Female name&#39;, &#39;Emma&#39;, &#39;Isabella&#39;, &#39;Emily&#39;, &#39;Madison&#39;]
+</pre></div>
+</div>
+<p>This looks roughly like what we are aiming for. By passing the parsing arguments <strong>header = 0</strong> and <strong>index_col = 0</strong> takes care of identifying the correct column names and using the <cite>Rank</cite> column as the index.</p>
+<p>Since the html-files contain more &lt;table&gt; tags, we have a number of results we would want to ignore. Luckily you can identify the interesting tables by filtering for tables featuring <cite>summary=&#8221;Popularity for top 1000&#8221;</cite>. There keyword to accomplish this is <strong>attrs = {&#8216;summary&#8217;: &#8216;Popularity for top 1000&#8217;}</strong>.</p>
+<p>To get rid of the error, that the file <cite>babynames.py</cite> could not be parsed we can pass <strong>filters = &#8216;.html&#8217;</strong>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">icy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/google-python-exercises/babynames/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icy</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="n">src</span><span class="p">,</span>
+<span class="go">cfg = {</span>
+<span class="go">  &#39;filters&#39;: &#39;.html&#39;,</span>
+<span class="go">  &#39;default&#39;: {</span>
+<span class="go">    &#39;header&#39;: 0,</span>
+<span class="go">    &#39;index_col&#39;: 0,</span>
+<span class="go">    &#39;attrs&#39;: {&#39;summary&#39;: &#39;Popularity for top 1000&#39;}</span>
+<span class="go">}})</span>
+</pre></div>
+</div>
+<p>This results in a preview of the first rows of all 10 tables. To simplify generating and testing the required parsing arguments, you can provide the location of a YAML-file to the <cite>cfg</cite>-keyword. A <cite>babynames_read.yml</cite> for this example would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>filters:
+  - &#39;.html&#39;
+default:
+  attrs: {summary: Popularity for top 1000}
+  header: 0
+  index_col: 0
+</pre></div>
+</div>
+<p>Now run the whole thing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">icy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/google-python-exercises/babynames/&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/google-python-exercises/babynames_read.yml&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">icy</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>data</strong> is a dict of pandas.DataFrames with 10 keys and a total memory usage of 234.6 KB.</p>
+<p><strong>Note:</strong> We used the &#8216;default&#8217;-key to apply the parsing arguments to every file. For more heterogenous data, you can specify different parsing arguments by using the filename (e.g. &#8216;baby1990.html&#8217;) as a key. If you specify &#8216;default&#8217; and specifig arguments, the &#8216;default&#8217; is still applied to all files but the specific arguments override the &#8216;default&#8217;.</p>
+</div>
+<div class="section" id="parsing-many-compressed-csv-files">
+<h2>Parsing many compressed CSV-Files<a class="headerlink" href="#parsing-many-compressed-csv-files" title="Permalink to this headline">¶</a></h2>
+<p>Download the <a class="reference external" href="http://seanlahman.com/files/database/lahman-csv_2015-01-24.zip">Lahman Baseball dataset</a> (from Sean Lahman&#8217;s <a class="reference external" href="http://www.seanlahman.com/baseball-archive/statistics/">extensive Baseball resources</a>) and the <a class="reference external" href="https://www.kaggle.com/c/caterpillar-tube-pricing/data">Catapillar Tube Pricing dataset</a> (from <a class="reference external" href="https://www.kaggle.com/c/caterpillar-tube-pricing">Kaggles Catapillar competition</a>). The Lahman dataset consists of 24 csv-files and a <cite>readme.txt</cite> while the Caterpillar dataset features 21 csv-files.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">icy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icy</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="s">&#39;~/Downloads/lahman-csv_2015-01-24.zip&#39;</span><span class="p">)</span>
+<span class="go"># output for lahman-csv_2015-01-24.zip</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">icy</span><span class="o">.</span><span class="n">preview</span><span class="p">(</span><span class="s">&#39;~/Downloads/data.zip&#39;</span><span class="p">)</span>
+<span class="go"># output for data.zip</span>
+</pre></div>
+</div>
+<p>Again a lot of data appears on your screen for each of the two datasets. Most of the results seem quite sensible but we can still do a little better with this <cite>lahman_read.yml</cite> (ignore the readme.txt and parse date-columns):</p>
+<div class="highlight-python"><div class="highlight"><pre>filters:
+  - &#39;.csv&#39;
+Master.csv:
+  parse_dates: [&#39;debut&#39;, &#39;finalGame&#39;]
+</pre></div>
+</div>
+<p>and this <cite>cat_read.yml</cite> (parse custom nan- and boolean-values and date-columns):</p>
+<div class="highlight-python"><div class="highlight"><pre>default:
+  na_values: [&#39;NA&#39;, &#39;NONE&#39;]
+  true_values: [&#39;Yes&#39;, &#39;Y&#39;]
+  false_values: [&#39;No&#39;, &#39;N&#39;]
+test_set.csv:
+  parse_dates: [&#39;quote_date&#39;]
+train_set.csv:
+  parse_dates: [&#39;quote_date&#39;]
+</pre></div>
+</div>
+<p>Now run the whole thing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">icy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/lahman-csv_2015-01-24.zip&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/lahman_read.yml&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">icy</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+<span class="go"># data for lahman-csv_2015-01-24.zip</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">src</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/data.zip&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="s">&#39;~/Downloads/cat_read.yml&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">icy</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
+<span class="go"># data for data.zip</span>
+</pre></div>
+</div>
+<p><strong>data</strong> is a dict of pandas.DataFrames with 24 keys and a total memory usage of 82.3 MB or 21 keys and a total memory usage of 11.0 MB respectively.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#parsing-many-html-files">Parsing many HTML-Files</a></li>
+<li><a class="reference internal" href="#parsing-many-compressed-csv-files">Parsing many compressed CSV-Files</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to icy&#8217;s Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/examples.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+      &copy;2015, Jonathan Rahn, <a href="https://www.rcs-analytics.com">RCS Analytics GmbH</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/examples.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+<script type="application/ld+json">
+ {
+  "@context" : "http://schema.org",
+  "@type" : "SoftwareSourceCode",
+  "author" : "Jonathan Rahn",
+  "codeRepository" : "https://github.com/rcs-analytics/icy",
+  "codeSampleType" : "full",
+  "programmingLanguage" : "Python",
+  "about" : "data wrangling glue code"
+ }
+</script>
+
+  </body>
+</html>

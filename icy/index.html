@@ -1,1 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to icy’s Documentation &mdash; icy 0.0.16 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.16',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+
+    <link rel="top" title="icy 0.0.16 documentation" href="#" />
+    <link rel="next" title="Examples" href="examples.html" />
+<link rel="canonical" href="https://www.rcs-analytics.com/icy/index.html">
+
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-57QCXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-57QCXX');</script>
+<!-- End Google Tag Manager -->
+
+
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-icy-s-documentation">
+<h1>Welcome to icy&#8217;s Documentation<a class="headerlink" href="#welcome-to-icy-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>See the <a class="reference external" href="https://github.com/rcs-analytics/icy">GitHub repository</a> and download from <a class="reference external" href="https://pypi.python.org/pypi/icy/">PyPI</a>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#parsing-many-html-files">Parsing many HTML-Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#parsing-many-compressed-csv-files">Parsing many compressed CSV-Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-icy"></span><dl class="function">
+<dt id="icy.read">
+<code class="descclassname">icy.</code><code class="descname">read</code><span class="sig-paren">(</span><em>path</em>, <em>cfg={}</em>, <em>raise_on_error=False</em>, <em>silent=False</em>, <em>verbose=False</em>, <em>return_errors=False</em><span class="sig-paren">)</span><a class="headerlink" href="#icy.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps pandas.IO &amp; odo to create a dictionary of pandas.DataFrames from multiple different sources</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> : str</p>
+<blockquote>
+<div><p>Location of file, folder or zip-file to be parsed. Can include globbing (e.g. <cite>*.csv</cite>).
+Can be remote with URI-notation beginning with e.g. <a class="reference external" href="http://">http://</a>, <a class="reference external" href="https://">https://</a>, <a class="reference external" href="file://">file://</a>, <a class="reference external" href="ftp://">ftp://</a>, s3:// and ssh://.
+Can be odo-supported database (SQL, MongoDB, Hadoop, Spark) if dependencies are available.
+Parser will be selected based on file extension.</p>
+</div></blockquote>
+<p><strong>cfg</strong> : dict or str, optional</p>
+<blockquote>
+<div><p>Dictionary of kwargs to be provided to the pandas parser (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/api.html#input-output">http://pandas.pydata.org/pandas-docs/stable/api.html#input-output</a>)
+or str with path to YAML, that will be parsed.</p>
+<p>Special keys:</p>
+<p><strong>filters</strong> : str or list of strings, optional. For a file to be processed, it must contain one of the Strings (e.g. [&#8216;.csv&#8217;, &#8216;.tsv&#8217;])</p>
+<p><strong>default</strong> : kwargs to be used for every file</p>
+<p><strong>custom_date_parser</strong> : strptime-format string (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior">https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior</a>), generates a parser that used as the <em>date_parser</em> argument</p>
+<p>If filename in keys, use kwargs from that key in addition to or overwriting <em>default</em> kwargs.</p>
+</div></blockquote>
+<p><strong>silent</strong> : boolean, optional</p>
+<blockquote>
+<div><p>If True, doesn&#8217;t print to stdout.</p>
+</div></blockquote>
+<p><strong>verbose</strong> : boolean, optional</p>
+<blockquote>
+<div><p>If True, prints parsing arguments for each file processed to stdout.</p>
+</div></blockquote>
+<p><strong>raise_on_error</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Raise exception or only display warning, if a file cannot be parsed successfully.</p>
+</div></blockquote>
+<p><strong>return_errors</strong> : boolean, optional</p>
+<blockquote>
+<div><p>If True, read() returns (data, errors) tuple instead of only data, with errors as a list of all files that could not be parsed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : dict</p>
+<blockquote class="last">
+<div><p>Dictionary of parsed pandas.DataFrames, with file names as keys.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Start with basic cfg and tune until the desired parsing result is achieved.</li>
+<li>File extensions are critical to determine the parser, make sure they are <em>common</em>.</li>
+<li>Avoid files named &#8216;default&#8217; or &#8216;filters&#8217;.</li>
+<li>Avoid duplicate file names.</li>
+<li>Subfolders and file names beginning with &#8216;.&#8217; or &#8216;_&#8217; are ignored.</li>
+<li>If an <a class="reference external" href="https://">https://</a> URI isn&#8217;t correctly processed, try <a class="reference external" href="http://">http://</a> instead.</li>
+<li>To connect to a database or s3-bucket, make sure the required dependencies like sqlalchemy, pymongo, pyspark or boto are available in the active environment.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="icy.merge">
+<code class="descclassname">icy.</code><code class="descname">merge</code><span class="sig-paren">(</span><em>data</em>, <em>cfg=None</em><span class="sig-paren">)</span><a class="headerlink" href="#icy.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>WORK IN PROGRESS</p>
+<p>Concat, merge, join, drop keys in dictionary of pandas.DataFrames
+into one pandas.DataFrame (data) and a pandas.Series (labels).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : dict of pandas.DataFrames</p>
+<blockquote>
+<div><p>Result of icy.read()</p>
+</div></blockquote>
+<p><strong>cfg</strong> : dict or str, optional</p>
+<blockquote>
+<div><p>Dictionary of actions to perform on data
+or str with path to YAML, that will be parsed.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : pandas.DataFrame</p>
+<blockquote>
+<div><p>The aggregated dataset</p>
+</div></blockquote>
+<p><strong>labels</strong> : pandas.Series</p>
+<blockquote class="last">
+<div><p>The target variable for analysis of the dataset,
+can have fewer samples than the aggregated dataset</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="icy.mem">
+<code class="descclassname">icy.</code><code class="descname">mem</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#icy.mem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total memory used by data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : dict of pandas.DataFrames or pandas.DataFrame</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>str</strong> : str</p>
+<blockquote class="last">
+<div><p>Human readable amount of memory used with unit (like KB, MB, GB etc.).</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="icy._path_to_objs">
+<code class="descclassname">icy.</code><code class="descname">_path_to_objs</code><span class="sig-paren">(</span><em>path, include=['*', '.*'], exclude=['.*', '_*']</em><span class="sig-paren">)</span><a class="headerlink" href="#icy._path_to_objs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn path with opt. globbing into valid list of files respecting
+include and exclude patterns.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> : str</p>
+<blockquote>
+<div><p>Path to process. Can be location of a file, folder or glob.
+Can be in uri-notation, can be relative or absolute or start with ~.</p>
+</div></blockquote>
+<p><strong>include</strong> : list, optional</p>
+<blockquote>
+<div><p>Globbing patterns to require in result, defaults to [&#8216;*&#8217;, &#8216;.*&#8217;].</p>
+</div></blockquote>
+<p><strong>exclude</strong> : list, optional</p>
+<blockquote>
+<div><p>Globbing patterns to exclude from result, defaults to [&#8216;.*&#8217;, &#8216;_*&#8217;].</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>objs</strong> : list</p>
+<blockquote class="last">
+<div><p>List of valid files</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>Doesn&#8217;t show hidden files starting with &#8216;.&#8217; by default. To enable hidden files, make sure &#8216;.*&#8217; is in <cite>include</cite> and &#8216;.*&#8217; is not in <cite>exclude</cite>.</li>
+<li>Doesn&#8217;t show files starting with &#8216;_&#8217; by default. To enable these files, make sure &#8216;_*&#8217; is not in <cite>exclude</cite>.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="icy.run_examples">
+<code class="descclassname">icy.</code><code class="descname">run_examples</code><span class="sig-paren">(</span><em>examples</em><span class="sig-paren">)</span><a class="headerlink" href="#icy.run_examples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run read() on a number of examples, supress output, generate summary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>examples</strong> : list of tuples of three str elements</p>
+<blockquote>
+<div><p>Tuples contain the path and cfg argument to the read function,
+as well as the cfg argument to the merge function (<em>TODO</em>)
+e.g. [(path, read_cfg, merge_cfg), (...)]</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">None</p>
+<blockquote class="last">
+<div><p>Prints all results to stdout.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to icy&#8217;s Documentation</a><ul>
+<li><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="examples.html" title="next chapter">Examples</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+      &copy;2015, Jonathan Rahn, <a href="https://www.rcs-analytics.com">RCS Analytics GmbH</a>.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+<script type="application/ld+json">
+ {
+  "@context" : "http://schema.org",
+  "@type" : "SoftwareSourceCode",
+  "author" : "Jonathan Rahn",
+  "codeRepository" : "https://github.com/rcs-analytics/icy",
+  "codeSampleType" : "full",
+  "programmingLanguage" : "Python",
+  "about" : "data wrangling glue code"
+ }
+</script>
+
+  </body>
+</html>
